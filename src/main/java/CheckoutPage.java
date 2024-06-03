@@ -1,228 +1,187 @@
 import org.openqa.selenium.WebDriver;
-
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import static org.junit.Assert.assertEquals;
 
 public class CheckoutPage extends BasePage {
 
     public WebDriverWait wait;
 
     public CheckoutPage(WebDriver driver) {
-
         super(driver);
-        wait = new WebDriverWait(driver, 10);
+        wait = new WebDriverWait(driver, 30);
+        PageFactory.initElements(driver, this);
     }
 
-    @FindBy(xpath = "//a[text()='Food']")
-    private WebElement foodMenu;
+    // ADD Awesome Granite Chips Product To Cart Test
+    @FindBy(linkText = "Awesome Granite Chips")
+    private WebElement addProductGraniteChipsToCartLink;
 
-    @FindBy(css = ".product-info button")
-    private WebElement addToCart;
-
-    //driver.findElement(By.id("city")).sendKeys("alabama");
-    @FindBy(id = "city")
-    private WebElement cityCart;
-
-    @FindBy(id = "postcode")
-    private WebElement postcode;
-
-    @FindBy(id = "region_id")
-    public WebElement cartRegion;
-
-    @FindBy(css = ".method-checkout-cart-methods-onepage-bottom button")
-    public WebElement proceedToCheckout;
-
-    @FindBy(id = "onepage-guest-register-button")
-    public WebElement selectGuest;
-
-    @FindBy(id = "billing:firstname")
-    public WebElement firstname;
-
-    @FindBy(id = "billing:lastname")
-    public WebElement lastname;
-    @FindBy(id = "billing:email")
-    private WebElement billingEmail;
-
-    @FindBy(id = "billing:street1")
-    private WebElement billingAddress;
-    @FindBy(id = "billing:city")
-    private WebElement billingCity;
-
-    @FindBy(id = "billing:region_id")
-    public WebElement billingRegion;
-
-    @FindBy(id = "billing:postcode")
-    private WebElement billingPostcode;
-
-    @FindBy(id = "billing:telephone")
-    private WebElement billingTelephone;
-
-    @FindBy(css = "#shipping-method-buttons-container button")
-    public WebElement shippingButton;
-
-    @FindBy(css = "#billing-buttons-container button")
-    public WebElement billingButton;
-
-    @FindBy(css = "#payment-buttons-container button")
-    public WebElement paymentButton;
-
-    @FindBy(css = ".btn-checkout")
-    public WebElement checkoutButton;
-
-    @FindBy(css = ".sub-title")
-    public WebElement subTitleElement;
-
-    @FindBy(id = "advice-required-entry-billing:firstname")
-    public WebElement requiredFirstName;
-
-    @FindBy(id = "advice-required-entry-billing:lastname")
-    public WebElement requiredLastName;
-
-    public void getFoodMenu() {
-        foodMenu.click();
+    public void clickAddProductGraniteChipsToCartLink() {
+        addProductGraniteChipsToCartLink.click();
     }
 
-    public void clickAddToCart() {
-        addToCart.click();
+    @FindBy(css = ".svg-inline--fa.fa-cart-plus.fa-w-18.fa-3x")
+    private WebElement addProductGraniteChipsToCartButton;
+
+    public void clickAddProductGraniteChipsToCartButton() {
+        addProductGraniteChipsToCartButton.click();
     }
 
-    public void setCityCart() {
-        cityCart.sendKeys("Alabama");
+    @FindBy(css = ".svg-inline--fa.fa-shopping-cart.fa-w-18")
+    private WebElement cartButton;
+
+    public void clickCartButton() {
+        cartButton.click();
     }
 
-    public void setPostcode() {
-        postcode.sendKeys("33033");
+    @FindBy(xpath = "(//td[@class='amount'])[1]")
+    private WebElement itemPrice;
+
+    @FindBy(xpath = "(//td[@class='amount'])[2]")
+    private WebElement taxPrice;
+    
+    @FindBy(xpath = "(//td[@class='amount'])[3]")
+    private WebElement totalPrice;
+
+    public double productPrice() {
+        String amountValue = itemPrice.getText();
+        String cleanAmountValue = amountValue.replace("$","");
+        return Double.parseDouble(cleanAmountValue);
     }
 
-    public void setCartRegion() {
-        cartRegion.sendKeys("Alabama");
+    @FindBy(css = ".svg-inline--fa.fa-plus-circle.fa-w-16")
+    private WebElement plusQuantity;
+
+    public void clickPlusQuantity() {
+        plusQuantity.click();
     }
 
-    public void clickProceedToCheckout() {
-        proceedToCheckout.click();
+    public double taxPrice() {
+        String taxValue = taxPrice.getText();
+        String cleanTaxValue = taxValue.replace("$", "");
+        return Double.parseDouble(cleanTaxValue);
     }
 
-    public void selectOption(WebElement element, String option) {
-        Select optionSelect = new Select(element);
-        optionSelect.selectByVisibleText(option);
+    public double totalPrice() {
+        String totalValue = totalPrice.getText();
+        String cleanTotalValue = totalValue.replace("$", "");
+        return Double.parseDouble(cleanTotalValue);
     }
 
-    public void clickGuest() {
-        selectGuest.click();
+    @FindBy(xpath = "//*[@data-test='error']")
+    WebElement checkoutErrorMessage;
+
+    // Address Information
+    @FindBy(id="first-name")
+    WebElement firstNameInput;
+
+    @FindBy(id="last-name")
+    WebElement lastNameInput;
+
+    @FindBy(id="address")
+    WebElement addressInput;
+
+    // Delivery Information
+    @FindBy(xpath = "//label[contains(text(), 'Choo Choo delivery')]/preceding-sibling::input[@data-test='delivery-type']")
+    WebElement deliveryTypeChooChoo;
+
+    // Payment Information
+    @FindBy(xpath = "//label[contains(text(), 'Cash on delivery')]/preceding-sibling::input[@data-test='payment-type']")
+    WebElement paymentTypeCashOnDelivery;
+
+    @FindBy(xpath = "//label[contains(text(), 'Credit card')]/preceding-sibling::input[@data-test='payment-type']")
+    WebElement paymentTypeCreditCard;
+
+    @FindBy(xpath = "//label[contains(text(), 'PayPal')]/preceding-sibling::input[@data-test='payment-type']")
+    WebElement paymentTypePayPal;
+
+    // Action Buttons
+    @FindBy(xpath = "//a[contains(@href, '#/cart') and contains(@class, 'btn-danger')]")
+    WebElement cancelButton;
+
+    @FindBy(xpath = "//button[@type='submit' and contains(@class, 'btn-success')]")
+    WebElement continueCheckoutButton;
+    
+    @FindBy(xpath = "//a[contains(@href, '#/checkout-complete') and contains(@class, 'btn btn-success')]")
+    WebElement completeOrderButton;
+
+    @FindBy(xpath = "//div[@class='text-center container' and contains(text(), 'How about adding some products in your cart?')]")
+    private WebElement emptyCartMessage;
+    
+    
+    // Methods to interact with the elements
+    public String getCheckoutError() {
+        return checkoutErrorMessage.getText();
     }
 
-    public void setFirstname() {
-        firstname.sendKeys("Test");
+    public void enterFirstName(String firstName) {
+        firstNameInput.clear();
+        firstNameInput.sendKeys(firstName);
     }
 
-    public void setLastname() {
-        lastname.sendKeys("User");
+    public void enterLastName(String lastName) {
+        lastNameInput.clear();
+        lastNameInput.sendKeys(lastName);
     }
 
-
-    public void setBillingCompany() {
+    public void enterAddress(String address) {
+        addressInput.clear();
+        addressInput.sendKeys(address);
     }
 
-    public void setBillingEmail() {
-        billingEmail.sendKeys("a@a.com");
-    }
-
-    public void setBillingAddress() {
-        billingAddress.sendKeys("adresa de test");
-    }
-
-    public void setBillingCity() {
-        billingCity.sendKeys("alabama test");
-    }
-
-    public void setBillingPostCode() {
-        billingPostcode.sendKeys("12345");
-    }
-
-    public void setBillingTelephone() {
-        billingTelephone.sendKeys("0123456789");
-    }
-
-    public void clickShippingButton() {
-        shippingButton.click();
-    }
-
-    public void clickBillingButton() {
-        billingButton.click();
-    }
-
-    public void clickPaymentButton() {
-        paymentButton.click();
-    }
-
-    public void clickCheckoutButton() {
-        checkoutButton.click();
-    }
-
-    public void addItemToCart() {
-        getFoodMenu();
-        clickAddToCart();
-    }
-
-    public void cartInfo() {
-        setCityCart();
-        setPostcode();
-        selectOption(cartRegion, "Alabama");
-        clickProceedToCheckout();
-    }
-
-    public void checkoutMandatoryFields() {
-        setFirstname();
-        setLastname();
-        setBillingCompany();
-        setBillingEmail();
-        setBillingAddress();
-        setBillingCity();
-        selectOption(billingRegion, "Alabama");
-        setBillingPostCode();
-        setBillingTelephone();
-    }
-
-    public void checkoutContinueButtons() {
-        clickBillingButton();
-        clickWhenReady(shippingButton);
-        clickWhenReady(paymentButton);
-        clickWhenReady(checkoutButton);
-    }
-
-    public void selectQty() {
-        cartRegion.clear();
-        cartRegion.sendKeys("2");
-    }
-
-    public void clickWhenReady(WebElement locator) {
-        WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
-        element.click();
-    }
-
-    public void assertTextWhenReady(WebElement locator, String expectedText) {
-        wait.until(ExpectedConditions.visibilityOf(locator));
-        try {
-            wait.until(ExpectedConditions.textToBePresentInElement(locator, expectedText));
-        } catch (Exception e) {
-            System.out.println("Element or text not visible or incorrect");
+    public void selectDeliveryTypeChooChoo() {
+        if (!deliveryTypeChooChoo.isSelected()) {
+            deliveryTypeChooChoo.click();
         }
-        assertEquals(expectedText, locator.getText());
     }
 
-    public void fillMandatoryFieldsExcept(WebElement fieldToSkip) {
-        addItemToCart();
-        cartInfo();
-        clickGuest();
-        checkoutMandatoryFields();
-        fieldToSkip.clear();
-        billingButton.click();
+    public void selectPaymentTypeCashOnDelivery() {
+        if (!paymentTypeCashOnDelivery.isSelected()) {
+            paymentTypeCashOnDelivery.click();
+        }
     }
 
+    public void selectPaymentTypeCreditCard() {
+        if (!paymentTypeCreditCard.isSelected()) {
+            paymentTypeCreditCard.click();
+        }
+    }
 
+    public void selectPaymentTypePayPal() {
+        if (!paymentTypePayPal.isSelected()) {
+            paymentTypePayPal.click();
+        }
+    }
+
+    public void cancelCheckout() {
+        cancelButton.click();
+    }
+
+    public void continueCheckout() {
+        continueCheckoutButton.click();
+    }
+
+    public boolean isProductPriceDisplayed() {
+        return itemPrice.isDisplayed();
+    }
+
+    public boolean isTaxPriceDisplayed() {
+        return taxPrice.isDisplayed();
+    }
+
+    public boolean isTotalPriceDisplayed() {
+        return totalPrice.isDisplayed();
+    }
+
+    public void clickCompleteOrder() {
+        completeOrderButton.click(); 
+    }
+
+    public String getEmptyCartMessage() {
+        wait.until(ExpectedConditions.visibilityOf(emptyCartMessage));
+        return emptyCartMessage.getText();
+    }
 }
